@@ -1,0 +1,90 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NumberGuessingGame
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            
+            int tries = 0;
+            int rNum = RanNum(); //generates random number from 1-10
+
+            Console.WriteLine("I am thinking of a number from 1-10, try and guess it!");
+            Console.WriteLine("Type your number 1-10:");
+
+            Game(ref rNum, tries);
+
+            Console.ReadKey();
+        }
+
+        public static int RanNum()
+        {
+            int rNum = new Random().Next(1,10); //generates random number 1-10
+            return rNum;
+        }
+
+        public static void Game(ref int rNum, int tries)    
+        {
+
+            string input = Console.ReadLine(); //asks for first guess
+
+            if (int.TryParse(input, out int guess) && guess >= 1 && guess <= 10) // checks if 'input' is a valid int between 1-10
+            {
+                if (guess > rNum)
+                {
+                    Console.WriteLine("Nope! Try guessing lower!");
+                    tries++; //adds 1 to try counter
+                    Game(ref rNum, tries);
+                }
+                else if (guess < rNum)
+                {
+                    Console.WriteLine("Nope! Try guessing higher!");
+                    tries++;
+                    Game(ref rNum, tries);
+
+                }
+                else
+                {
+                    Console.WriteLine("Correct! It only took you " + tries + " tries!");
+                    Console.WriteLine("Would you like to play again? (Y/N):");
+                    string YN = Console.ReadLine();
+                    YN = YN.ToUpper();
+                    if (YN == "Y")
+                    {
+                        Main();
+                    }
+                    else if (YN == "N")
+                    {
+                        Console.WriteLine("Ok, hope you had fun!");
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error, please restart program if you want to play again");
+                    }
+                }
+
+
+
+
+
+
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a number between 1 and 10.");
+            }
+        }
+        
+    
+    
+    
+    
+    }
+}

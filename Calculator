@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Calcualtor
+{
+    internal class MainRun
+    {
+        static void Main()
+        {
+            Console.WriteLine("Input calculation (+,-,/,*):  ");
+            string symbol = Console.ReadLine();
+            Console.WriteLine("Input first number: ");
+            int x = int.Parse(Console.ReadLine());
+            Console.WriteLine("Input second number: ");
+            int y = int.Parse(Console.ReadLine());
+            int ans = 0;
+
+
+
+
+            if (symbol == "+")
+            {
+                ans = x + y;
+
+            }
+            else if (symbol == "-")
+            {
+                ans = x - y;
+            }
+            else if (symbol == "*")
+            {
+                ans = x * y;
+            }
+            else if (symbol == "/")
+            {
+                ans = x / y;
+            }
+            else
+            {
+                Console.WriteLine("Error, try again...");
+                Main();
+            }
+            Console.WriteLine(ans);
+            Console.ReadLine();
+        }
+
+
+
+
+
+
+    }
+    
+}

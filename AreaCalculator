@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Globalization;
+using System.IO.Pipes;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace AreaCalc
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            Console.WriteLine("Type r to calculate area of rectangle, type anything else for area of circle");
+            char shape = char.Parse(Console.ReadLine());
+            if (shape == 'r')
+            {
+                int ans = rect();
+                Console.WriteLine(ans);
+            }
+            else
+            {
+                double ans = circ();
+                if (ans == 0.0)
+                {
+                    
+                }
+                else
+                {
+                    Console.WriteLine(ans);
+
+                }
+            }
+            Console.WriteLine("Would you like to go again? (Y/N):");
+            string YN = Console.ReadLine();
+            YN = YN.ToUpper();
+            if (YN == "Y")
+            {
+                Main();
+            }
+            else if (YN == "N")
+            {
+                Console.WriteLine("Ok, hope you had fun!");
+
+            }
+            else
+            {
+                Console.WriteLine("Error, please restart program if you want to play again");
+            }
+
+            Console.ReadKey();
+        }
+
+        static int rect()
+        {
+
+            Console.WriteLine("Hight: ");
+            int h = int.Parse(Console.ReadLine());
+            Console.WriteLine("Length: ");
+            int l = int.Parse(Console.ReadLine());
+            int ans = l * h;
+            return ans;
+
+        }
+
+        static double circ()
+        {
+            Console.WriteLine("Radius:");
+            
+            try
+            {
+                double r = double.Parse(Console.ReadLine());
+                double  ans = r * 3.141592;
+                return ans;
+            }
+            catch
+            {
+                Console.WriteLine("Please input a valid number!");
+
+            }
+            return 0.0;
+            
+
+        }
+
+
+
+
+
+    }   
+}

@@ -1,0 +1,122 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace TurnBasedCombat
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            bool pTurn = true;
+            int pHealth = 100; 
+            int aHealth = 60;
+            
+
+            while (pHealth > 0 && aHealth > 0)
+            {
+                if (pTurn == true)
+                {
+                    var (fpTurn, fpHealth, faHealth) = Pturn(ref pTurn, pHealth, aHealth);
+                    pTurn = fpTurn; pHealth = fpHealth; aHealth = faHealth;
+                }
+                else
+                {
+                    var (tpTurn, tpHealth, taHealth) = Aturn(ref pTurn, pHealth, aHealth);
+                    pTurn = tpTurn; pHealth = tpHealth; aHealth = taHealth;
+
+                }
+            }
+            if (pHealth > 0)
+            {
+                Console.WriteLine("Player wins!!!");
+            }
+            else
+            {
+                Console.WriteLine("Enemy wins!!!");
+            }
+
+
+
+            Console.ReadLine();
+        }
+
+        public static Tuple<bool,int,int> Pturn(ref bool pTurn, int pHealth, int aHealth)
+        {
+            
+                Console.WriteLine("---Player Turn---");
+                Console.WriteLine("Player health: "+pHealth+" /// Enemy health: "+aHealth);
+                Console.WriteLine("Enter a to attack or h to heal");
+                string input = (Console.ReadLine());
+                if (input == "a")
+                {
+                    Console.WriteLine("Player deals 5 damage!");
+                    aHealth -= 5;
+                    pTurn = false;
+                    
+                }
+                else if (input == "h")
+                {
+                    Console.WriteLine("Player heals 5 health!");
+                    Console.WriteLine("");
+                    pHealth += 5;
+                    pTurn = false;
+                    
+                }
+                else
+                {
+                    Console.WriteLine("Please input a or h only.");
+                    Console.WriteLine("");
+                    Pturn(ref pTurn, pHealth, aHealth);
+                    
+                }
+            Console.WriteLine("");
+            return Tuple.Create(pTurn, pHealth, aHealth);
+
+
+
+        }
+
+        public static Tuple<bool, int, int> Aturn(ref bool pTurn, int pHealth, int aHealth)
+        {
+            int random;
+            Console.WriteLine("---Enemy Turn---");
+            Thread.Sleep(1000);
+            Console.WriteLine("Player health: " + pHealth + " /// Enemy health: " + aHealth);
+            
+            random = new Random().Next(1, 3);
+            if (random == 1)
+            {
+
+                Console.WriteLine("Enemy deals 7 damage!");
+                Console.WriteLine("");
+                pHealth -= 7;
+                pTurn = true;
+
+            }
+            else 
+            {
+
+                Console.WriteLine("Enemy heals 5 health!");
+                Console.WriteLine("");
+                aHealth += 5;
+                pTurn = true;
+
+            }
+
+            Thread.Sleep(1000);
+            Console.WriteLine("");
+            return Tuple.Create(pTurn, pHealth, aHealth);
+
+
+
+        }
+
+
+
+
+    }
+}

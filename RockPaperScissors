@@ -1,0 +1,129 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
+using System.Linq;
+using System.Net.Configuration;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace RockPaperSciscrs
+{
+    internal class Program
+    {
+        static void Main()
+        {
+            int pWins = 0;
+            int eWins = 0;
+
+            while (pWins < 2 && eWins < 2)
+            {
+                Console.Clear();
+
+                int RPS = pTurn();
+                int eRPS = eTurn();
+                var (tpWins, teWins) = compare(ref RPS, eRPS, pWins, eWins);
+                pWins = tpWins; eWins = teWins;
+                
+                Thread.Sleep(1000);
+                Console.WriteLine("");
+                Console.WriteLine("The score is: " + pWins + ":" + eWins + "!");
+                Thread.Sleep(2000);
+            }
+            if (pWins == 2)
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Player wins!!!");
+
+            }
+            else
+            {
+                Console.WriteLine("");
+                Console.WriteLine("Bot wins!!!");
+            }
+
+
+            Console.ReadLine();
+        }
+
+        public static int pTurn()
+        {
+            Console.WriteLine("Rock, paper or scissors?");
+            string input = Console.ReadLine();
+            input = input.ToLower();
+            if (input == "rock")
+            {
+                int RPS = 0;
+                return RPS;
+            }
+            else if (input == "paper")
+            {
+                int RPS = 1;
+                return RPS;
+            }
+            else if (input == "scissors")
+            {
+                int RPS = 2;
+                return RPS;
+            }
+            else
+            {
+                Console.WriteLine("Please type rock, paper or scissors only");
+                Thread.Sleep(1000);
+                Console.Clear();
+                pTurn();
+
+            }
+            return 0;
+        }
+
+        public static int eTurn()
+        {
+            int random = new Random().Next(0,3);
+            string pick;
+            if (random == 0)
+            {
+                pick = "Rock";
+            }
+            else if (random == 1)
+            {
+                pick = "Paper";
+            }
+            else
+            {
+                pick = "Scissors";
+            }
+            Console.WriteLine("Bot picked: "+pick+"!");
+            Thread.Sleep(1000);
+            return random;
+
+
+        }
+
+        public static Tuple <int,int> compare(ref int RPS, int eRPS, int pWins, int eWins)
+        {
+           
+            if (RPS == 0 && eRPS == 1 || RPS == 1 && eRPS == 2 || RPS == 2 && eRPS == 0)
+            {
+                Console.WriteLine("Bot wins");
+                eWins++;
+            }
+            else if (eRPS == 0 && RPS == 1 || eRPS == 1 && RPS == 2 || eRPS == 2 && RPS == 0)
+                {
+                Console.WriteLine("Player wins");
+                pWins++;
+            }
+            else
+            {
+                Console.WriteLine("Draw, replay point");
+            }
+
+            return Tuple.Create(pWins, eWins);
+        }
+
+
+
+
+    }
+}

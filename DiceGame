@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace DiceGame
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int pWin = 0;
+            int aWin = 0;
+            int x = 0;
+
+            while (x < 10) { // run 10 times
+                Console.WriteLine("Press any key to roll dice..."); // wait for input to make the player feel as though they are actually doing something
+                Console.ReadKey();
+
+                int num = Roll(); // get roll for player
+                int pScore = num; // asign roll to pScore so we can write over num
+
+                Console.WriteLine("You rolled: " + num); // display players roll
+                Console.WriteLine("");
+                Thread.Sleep(1000);
+
+                Console.WriteLine("AI rolling..."); // add delays to make program easier to follow
+                Thread.Sleep(1500);
+
+                num = Roll(); // get roll for ai
+                int aScore = num; // asign roll to aScore so we can write over num
+
+                Console.WriteLine("AI rolled: " + num); // display ai roll
+                Thread.Sleep(1000);
+
+                if (pScore > aScore) //checks who had the higher roll
+                {
+                    pWin++; //adds a win to the player
+                    Console.WriteLine("You win!!! The score is currently " + pWin + " : " + aWin + "!"); //shows the current score
+                    Console.WriteLine("");
+                }
+                else if (pScore < aScore) 
+                {
+                    aWin++; //adds a win to the ai
+                    Console.WriteLine("The AI wins!!! The score is currently "+pWin+" : "+aWin+"!");
+                    Console.WriteLine("");
+                }
+                else
+                {
+                    x--; //adds an extra game
+                    Console.WriteLine("Its a draw!!! The score is currently "+pWin+" : "+aWin+"!");
+                    Console.WriteLine("Replay point!");
+                    Console.WriteLine("");
+                }
+                x++; // x/10 games completed
+            }
+            Console.WriteLine("Thats all 10 of the games!");
+            Console.WriteLine("The winner is...");
+            Console.WriteLine("");
+
+            if (pWin > aWin) //checks who has the most wins
+            {
+                Console.WriteLine("You!!! The score was " + pWin + " : " + aWin + "!");
+            }
+            else if (pWin < aWin)
+            {
+                Console.WriteLine("The AI!!! The score was " + pWin + " : " + aWin + "!");
+            }
+            else
+            {
+                Console.WriteLine("Its a draw!!! The score was " + pWin + " : " + aWin + "!");
+            }
+
+
+            Console.ReadKey(); // prevents output closing instantly
+        }
+
+        public static int Roll()
+        {
+            int random_number = new Random().Next(1, 6); // gets a random number from 1-6
+            return random_number;
+
+
+        }
+    }   
+}

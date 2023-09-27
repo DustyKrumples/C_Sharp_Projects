@@ -1,0 +1,81 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace LibraryManagement
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            /*Console.WriteLine("1 to search for books /// 2 to add book");
+            int input = 0;
+            try
+            {
+                input = int.Parse(Console.ReadLine());
+            }
+            catch
+            {
+                Console.WriteLine("Please input 1 or 2 only.");
+                Console.Clear();
+                Main(args);
+            }
+            if (input == 1)
+            {
+
+            }
+            else if (input == 2)
+            {
+
+            }
+            else
+            {
+                Console.WriteLine("Please input 1 or 2 only.");
+                Console.Clear();
+                Main(args);
+            }*/
+            int x = 0;
+            string p = "";
+            // Create or write to file
+            string folder = @"H:\Downloads\myFolder\";
+            string fileName = "bookLibrary.txt";
+            string fullPath = folder + fileName;
+            string[] authors = { "Suzanne Collins", "God", "", "", "" };
+            string[] book = { "Hunger Games","The Bible" };
+            string[] location = { "A1","A2" };
+            string[] genre = { "Thriller","Religious" };
+            int len = authors.Length;
+            p = authors[x] + "," + book[x] + "," + location[x] + "," + genre[x];
+            File.WriteAllText(fullPath, p);
+            x++;
+            p = authors[x] + "," + book[x] + "," + location[x] + "," + genre[x];
+            File.WriteAllText(fullPath, p);
+
+
+            // Read a file
+            //string readText = File.ReadAllText(fullPath);
+            //Console.WriteLine(readText);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        }
+
+    }
+}

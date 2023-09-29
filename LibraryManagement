@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 
 namespace LibraryManagement
 {
@@ -11,17 +9,72 @@ namespace LibraryManagement
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("1 to search for books /// 2 to add book /// 3 to remove book");
+
+            List<string> authors = new List<string>(); //makes lists for each of the 4 attributes the book has
+            List<string> book = new List<string>();
+            List<string> location = new List<string>();
+            List<string> genre = new List<string>();
+            List<int> lines = new List<int>();
+
+            bool found = false;
+            int y = 0;
             int input = 0;
             int x = 0;
-            string path = @"H:\Downloads\myFolder\bookLibrary.txt";
-            string title = "authors,book,location,genre";
-            string[] authors = { "Suzanne Collins", "God" };
-            string[] book = { "Hunger Games", "The Bible" };
-            string[] location = { "A1", "A2" };
-            string[] genre = { "Thriller", "Religious" };
-            int len = authors.Length;
+            int t = 1;
+            string path = @"C:\Users\weste\Downloads\myFolder\bookLibrary.txt";
+            string[] arr = read(path);
+            bool error = false;
+            string test = "0";
 
+            while (error == false)
+            {
+                try
+                {
+                    test = arr[t - 1];
+
+                }
+                catch
+                {
+                    error = true;
+                }
+                t += 4;
+            }//calculates how many lines there are
+            t -= 9;
+            int lineCount = t / 4;
+
+            while (x < lineCount)
+            {
+                authors.Add(arr[y]);
+                x++;
+                y += 4;
+            }// adds all authors to an author list
+            x = 0; y = 0;
+            while (x < lineCount)
+            {
+                book.Add(arr[y + 1]);
+                x++;
+                y += 4;
+            }// adds all books to an book list
+            x = 0; y = 0;
+            while (x < lineCount)
+            {
+                location.Add(arr[y + 2]);
+                x++;
+                y += 4;
+            }// adds all locations to an location list
+            x = 0; y = 0;
+            while (x < lineCount)
+            {
+                genre.Add(arr[y + 3]);
+                x++;
+                y += 4;
+            }// adds all genres to an genre list
+            x = 0; y = 0;
+
+
+
+
+            Console.WriteLine("1 to search for books /// 2 to add book /// 3 to remove book");
             try
             {
                 input = int.Parse(Console.ReadLine());
@@ -32,67 +85,357 @@ namespace LibraryManagement
                 Console.Clear();
                 Main(args);
             }
+
+
             if (input == 1)
             {
-
+                search(lineCount, authors, book, location, genre, lines);
             }
+
+
             else if (input == 2)
             {
-
-                while (x < len)
+                Console.WriteLine("Please input Author's name:");
+                string authorAdd = Console.ReadLine();
+                Console.WriteLine("Please input Book name:");
+                string bookAdd = Console.ReadLine();
+                Console.WriteLine("Please input Location (Type TBD if it is to be decided):");
+                string locationAdd = Console.ReadLine();
+                Console.WriteLine("Please input Genre:");
+                string genreAdd = Console.ReadLine();
+                string p = authorAdd + "," + bookAdd + "," + locationAdd + "," + genreAdd + ",";
+                Console.WriteLine("You want to add this book: " + p + "? (Y/N)");
+                string YN = Console.ReadLine();
+                YN.ToUpper();
+                if (YN == "Y")
                 {
-
-                    string p = authors[x] + "," + book[x] + "," + location[x] + "," + genre[x];
                     using (StreamWriter sw = File.AppendText(path))
                     {
                         sw.WriteLine(p);
                     }
-                    x++;
+                    Console.WriteLine("Added book!");
+                }
+                else if (YN == "N")
+                {
+                    Console.WriteLine("Canceled");
+                }
+                else
+                {
+                    Console.WriteLine("Please input Y/N");
                 }
             }
+
+
             else if (input == 3)
             {
+                bool foundRemove = false;
+                int v = 0;
+                Console.WriteLine("Search for book to remove");
+                lines = search(lineCount, authors, book, location, genre, lines);
+                int lengthMultiple = lines.Count();
+                int lineCounter = lines[lengthMultiple-1];
+                if (lengthMultiple > 0)
+                {
+                    Console.WriteLine("Please type the number of the entry you want to remove:");
+                    try
+                    {
+                        v = int.Parse(Console.ReadLine());
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Invalid option");
+                    }
+                    if (v < lengthMultiple + 1)
+                    {
+                        
+                        Console.WriteLine("You want to delete "+book[lineCounter-1]+"? (Y/N)");
+                        string YN = Console.ReadLine();
+                        YN.ToUpper();
+                        if (YN == "Y")
+                        {
+                            int lineToDelete = lineCounter;
+
+                            // Read the lines of the file into a list
+                            List<string> line = File.ReadAllLines(path).ToList();
+
+                            // Check if the line number is valid
+                            if (lineToDelete >= 1 && lineToDelete <= line.Count)
+                            {
+                                // Remove the line from the list (remember that List<> uses 0-based indexing)
+                                line.RemoveAt(lineToDelete - 1);
+
+                                // Write the modified lines back to the file
+                                File.WriteAllLines(path, line);
+
+                                Console.WriteLine("Deleted book...");
+
+                            }
+                        }
+                        else if (YN == "N")
+                        {
+                            Console.WriteLine("Canceled");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Please input Y/N");
+                        }
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid option");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Book not found...");
+                }
+
 
             }
+
+
             else
             {
                 Console.WriteLine("Please input 1 or 2 only.");
                 Console.Clear();
                 Main(args);
             }
+            Console.WriteLine("\n\nPress any key to go back to main menu...");
+            Console.ReadKey();
+            Console.Clear();
+            Main(args);
+            Console.ReadLine();
 
-            // Create or write to file
-
-            
-
-
-
-
-
-            
-
-
-            // Read a file
-            //string readText = File.ReadAllText(fullPath);
-            //Console.WriteLine(readText);
+        }
 
 
 
+        public static string[] read(string path)
+        {
+            // Specifying a file
 
 
-
-
-
-
-
-
-
+            // Calling the ReadAllLines() function
+            string[] readText = File.ReadAllLines(path);
+            string str = string.Join("", readText);
+            string[] items = str.Split(',');
+            return items;
 
 
 
 
 
         }
+        public static List<int> search(int lineCount, List<string> authors, List<string> book, List<string> location, List<string> genre, List<int> lines)
+        {
+            int x = 0;
+            int input = 0;
+            bool found = false;
+            
 
+
+
+
+
+
+            Console.WriteLine("1 to search based on author /// 2 for book name /// 3 for location /// 4 for genre /// 5 to display all books");
+            try
+            {
+                input = int.Parse(Console.ReadLine());
+            }
+            catch
+            {
+                Console.WriteLine("Please input 1/2/3/4 only.");
+                Console.Clear();
+
+            }
+            
+            if (input == 1)
+            {
+                Console.WriteLine("Enter search prompt:");
+                string prompt = (Console.ReadLine());
+                while (found == false)
+                {
+                    while (x < lineCount)
+                    {
+                        if (prompt == authors[x])
+                        {
+                            found = true;
+                            x++;
+                            lines.Add(x);
+
+
+
+                        }
+                        else
+                        {
+                            x++;
+                        }
+                    }
+                    break;
+                }
+                if (found == false)
+                {
+                    Console.WriteLine("Author not found");
+                }
+                else
+                {
+                    Console.WriteLine("Author // Book // Location // Genre");
+                    int lengthMultiple = lines.Count();
+                    int z = 0;
+                    while (z < lengthMultiple)
+                    {
+                        int p = z + 1;
+                        Console.WriteLine(p + ".  " + authors[lines[z] - 1] + " // " + book[lines[z] - 1] + " // " + location[lines[z] - 1] + " // " + genre[lines[z] - 1]);
+                        z++;
+                    }
+                }
+            }
+            else if (input == 2)
+            {
+                while (found == false)
+                {
+                    Console.WriteLine("Enter search prompt:");
+                    string prompt = (Console.ReadLine());
+                    while (x < lineCount)
+                    {
+                        if (prompt == book[x])
+                        {
+                            found = true;
+                            lines.Add(x);
+                            x++;
+                        }
+                        else
+                        {
+                            x++;
+                        }
+                    }
+                    break;
+                }
+                if (found == false)
+                {
+                    Console.WriteLine("Book not found");
+                }
+                else
+                {
+                    x -= 1;
+                    Console.WriteLine("Author // Book // Location // Genre");
+                    int lengthMultiple = lines.Count();
+                    int z = 0;
+                    while (z < lengthMultiple)
+                    {
+                        int p = z + 1;
+                        Console.WriteLine(p + ".  " + authors[lines[z]] + " // " + book[lines[z]] + " // " + location[lines[z]] + " // " + genre[lines[z]]);
+                        z++;
+                    }
+                }
+            }
+            else if (input == 3)
+            {
+                Console.WriteLine("Enter search prompt:");
+                string prompt = (Console.ReadLine());
+                while (found == false)
+                {
+                    while (x < lineCount)
+                    {
+                        if (prompt == location[x])
+                        {
+                            found = true;
+                            lines.Add(x);
+                            x++;
+                        }
+                        else
+                        {
+                            x++;
+                        }
+                    }
+                    break;
+                }
+                if (found == false)
+                {
+                    Console.WriteLine("Location not found");
+                }
+                else
+                {
+                    x -= 1;
+                    Console.WriteLine("Author // Book // Location // Genre");
+                    int lengthMultiple = lines.Count();
+                    int z = 0;
+                    while (z < lengthMultiple)
+                    {
+                        int p = z + 1;
+                        Console.WriteLine(p + ".  " + authors[lines[z]] + " // " + book[lines[z]] + " // " + location[lines[z]] + " // " + genre[lines[z]]);
+                        z++;
+                    }
+                }
+            }
+            else if (input == 4)
+            {
+                Console.WriteLine("Enter search prompt:");
+                string prompt = (Console.ReadLine());
+                while (found == false)
+                {
+                    while (x < lineCount)
+                    {
+                        if (prompt == genre[x])
+                        {
+                            found = true;
+                            lines.Add(x);
+                            x++;
+                        }
+                        else
+                        {
+                            x++;
+                        }
+                    }
+                    break;
+                }
+                if (found == false)
+                {
+                    Console.WriteLine("Genre not found");
+                }
+                else
+                {
+                    x -= 1;
+                    Console.WriteLine("Author // Book // Location // Genre");
+                    int lengthMultiple = lines.Count();
+                    int z = 0;
+                    while (z < lengthMultiple)
+                    {
+                        int p = z + 1;
+                        Console.WriteLine(p + ".  " + authors[lines[z]] + " // " + book[lines[z]] + " // " + location[lines[z]] + " // " + genre[lines[z]]);
+                        z++;
+                    }
+                }
+            }
+            else if (input == 5)
+            {
+                Console.WriteLine("");
+                while (x < lineCount)
+                {
+                    
+                    Console.WriteLine((x+1) + ".  " + authors[x] + " // " + book[x] + " // " + location[x] + " // " + genre[x]);
+                    x++;
+                }
+
+
+            }
+
+
+
+
+            else
+            {
+                Console.WriteLine("Please input 1/2/3/4");
+            }
+
+            
+            return lines;
+        }
     }
 }
+
+
+
+

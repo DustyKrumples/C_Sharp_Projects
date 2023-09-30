@@ -14,35 +14,35 @@ namespace LibraryManagement
             List<string> book = new List<string>();
             List<string> location = new List<string>();
             List<string> genre = new List<string>();
-            List<int> lines = new List<int>();
+            List<int> lines = new List<int>(); //makes list to count how many lines that match
 
-            bool found = false;
+
             int y = 0;
             int input = 0;
             int x = 0;
             int t = 1;
-            string path = @"C:\Users\weste\Downloads\myFolder\bookLibrary.txt";
-            string[] arr = read(path);
+            string path = @"C:\Users\weste\Downloads\myFolder\bookLibrary.txt";//defining path to txt file
+            string[] arr = read(path);//reads the file and saves it to an array
             bool error = false;
             string test = "0";
 
             while (error == false)
             {
-                try
+                try//checks if test is able to be assigned, if it is then it means there is a valid word in that seciton of the list
                 {
-                    test = arr[t - 1];
+                    test = arr[t - 1];//to account for the fact lists start at 0 you do t-1, if you were looking at the first word in line 3, that would be 4x3-1 as the lines are 4 words long
 
                 }
                 catch
                 {
-                    error = true;
+                    error = true;//once there is an error the program knows that it has found the last word
                 }
-                t += 4;
+                t += 4;//next line as there are 4 words in each line
             }//calculates how many lines there are
             t -= 9;
             int lineCount = t / 4;
 
-            while (x < lineCount)
+            while (x < lineCount)//for every line in the array it will add the correct value to the correct list
             {
                 authors.Add(arr[y]);
                 x++;
@@ -51,7 +51,7 @@ namespace LibraryManagement
             x = 0; y = 0;
             while (x < lineCount)
             {
-                book.Add(arr[y + 1]);
+                book.Add(arr[y + 1]);//+1 because of the way the file is storing things e.g. Author,Book Name,Location,Genre. Book Name is +1 from the start of the line
                 x++;
                 y += 4;
             }// adds all books to an book list
@@ -75,7 +75,7 @@ namespace LibraryManagement
 
 
             Console.WriteLine("1 to search for books /// 2 to add book /// 3 to remove book");
-            try
+            try//catches any errors with input
             {
                 input = int.Parse(Console.ReadLine());
             }
@@ -89,13 +89,13 @@ namespace LibraryManagement
 
             if (input == 1)
             {
-                search(lineCount, authors, book, location, genre, lines);
+                search(lineCount, authors, book, location, genre, lines);//uses search method but doesnt need to do any more than that
             }
 
 
             else if (input == 2)
             {
-                Console.WriteLine("Please input Author's name:");
+                Console.WriteLine("Please input Author's name:");//asks for book details
                 string authorAdd = Console.ReadLine();
                 Console.WriteLine("Please input Book name:");
                 string bookAdd = Console.ReadLine();
@@ -103,41 +103,48 @@ namespace LibraryManagement
                 string locationAdd = Console.ReadLine();
                 Console.WriteLine("Please input Genre:");
                 string genreAdd = Console.ReadLine();
-                string p = authorAdd + "," + bookAdd + "," + locationAdd + "," + genreAdd + ",";
+                string p = authorAdd + "," + bookAdd + "," + locationAdd + "," + genreAdd + ",";//turns it into an easy-to-add (to the file) variable.
                 Console.WriteLine("You want to add this book: " + p + "? (Y/N)");
-                string YN = Console.ReadLine();
-                YN.ToUpper();
-                if (YN == "Y")
+
+                error = true;//allows repition if you get the input wrong
+                while (error == true)
                 {
-                    using (StreamWriter sw = File.AppendText(path))
+                    string YN = Console.ReadLine();
+                    YN.ToUpper();
+                    if (YN == "Y")
                     {
-                        sw.WriteLine(p);
+                        using (StreamWriter sw = File.AppendText(path))//opens file to append text to
+                        {
+                            sw.WriteLine(p);//appends p (the easy-to-add variable)
+                        }
+                        Console.WriteLine("Added book!");
+                        error = false;//says that the input is good so you dont need to repeat
                     }
-                    Console.WriteLine("Added book!");
-                }
-                else if (YN == "N")
-                {
-                    Console.WriteLine("Canceled");
-                }
-                else
-                {
-                    Console.WriteLine("Please input Y/N");
+                    else if (YN == "N")
+                    {
+                        Console.WriteLine("Canceled");
+                        error = false;//says that the input is good so you dont need to repeat
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please input Y/N");//doesnt say that the input is good so you do need to repeat
+                    }
                 }
             }
 
 
             else if (input == 3)
             {
-                bool foundRemove = false;
                 int v = 0;
                 Console.WriteLine("Search for book to remove");
-                lines = search(lineCount, authors, book, location, genre, lines);
-                int lengthMultiple = lines.Count();
-                int lineCounter = lines[lengthMultiple-1];
-                if (lengthMultiple > 0)
+                lines = search(lineCount, authors, book, location, genre, lines);//uses search method and returns the a list of the valid line numbers
+                int lengthLines = lines.Count();//figures out how many valid lines we have
+
+                if (lines[0] == -1)//a way to make displaying all the lines in our text file work without saving them all to lines
                 {
+                    v = 0;
                     Console.WriteLine("Please type the number of the entry you want to remove:");
-                    try
+                    try//catches input errors
                     {
                         v = int.Parse(Console.ReadLine());
                     }
@@ -145,47 +152,107 @@ namespace LibraryManagement
                     {
                         Console.WriteLine("Invalid option");
                     }
-                    if (v < lengthMultiple + 1)
+                    
+                    List<string> line = File.ReadAllLines(path).ToList();// Read the lines of the file into a list
+                    int lineToDelete = v;
+                    
+                    if (lineToDelete >= 1 && lineToDelete <= line.Count)// Check if the line number is valid
                     {
-                        
-                        Console.WriteLine("You want to delete "+book[lineCounter-1]+"? (Y/N)");
-                        string YN = Console.ReadLine();
-                        YN.ToUpper();
-                        if (YN == "Y")
+                        string fullLineToDelete = File.ReadLines(path).Skip(lineToDelete - 1).Take(1).First();//deletes the line
+                        Console.WriteLine("Are you sure you want to delete " + fullLineToDelete + "? (Y/N)");
+                        error = true;
+                        while (error == true)//allows for repition if input isnt Y/N
                         {
-                            int lineToDelete = lineCounter;
-
-                            // Read the lines of the file into a list
-                            List<string> line = File.ReadAllLines(path).ToList();
-
-                            // Check if the line number is valid
-                            if (lineToDelete >= 1 && lineToDelete <= line.Count)
+                            
+                            string YN = Console.ReadLine();
+                            if (YN == "Y")
                             {
-                                // Remove the line from the list (remember that List<> uses 0-based indexing)
-                                line.RemoveAt(lineToDelete - 1);
 
-                                // Write the modified lines back to the file
-                                File.WriteAllLines(path, line);
+                                
+                                line.RemoveAt(lineToDelete - 1);// Remove the line from the list 
+
+
+                                File.WriteAllLines(path, line);// Write the modified lines back to the file
 
                                 Console.WriteLine("Deleted book...");
+                                error = false;
+                            }
 
+                            else if (YN == "N")
+                            {
+                                Console.WriteLine("Canceled...");
+                                error = false;  
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please enter Y/N only");
                             }
                         }
-                        else if (YN == "N")
-                        {
-                            Console.WriteLine("Canceled");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Please input Y/N");
-                        }
-                        
                     }
+                }
+                else if (lengthLines > 0)//if there is valid lines returned
+                {
+                    int lineCounter = lines[lengthLines - 1];
+                    Console.WriteLine("Please type the number of the entry you want to remove:");
+                    try//catches input errors
+                    {
+                        v = int.Parse(Console.ReadLine());
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Invalid option");
+                    }
+                    if (v < lengthLines + 1)//checks if your input is accually in the list
+                    {
+
+                        Console.WriteLine("You want to delete " + book[lineCounter - 1] + "? (Y/N)");
+                        error = true;
+                        while (error == true)//you know what this is by now, right?
+                        {
+                            string YN = Console.ReadLine();
+                            YN.ToUpper();
+                            if (YN == "Y")
+                            {
+                                int lineToDelete = lineCounter;
+
+                                
+                                List<string> line = File.ReadAllLines(path).ToList();// Read the lines of the file into a list
+
+                                
+                                if (lineToDelete >= 1 && lineToDelete <= line.Count)// Check if the line number is valid
+                                {
+                                    
+                                    line.RemoveAt(lineToDelete - 1);// Remove the line from the list (remember that List<> uses 0-based indexing)
+
+                                    
+                                    File.WriteAllLines(path, line);// Write the modified lines back to the file
+
+                                    Console.WriteLine("Deleted book...");
+                                    error = false;
+
+                                }
+                            }
+                            else if (YN == "N")
+                            {
+                                Console.WriteLine("Canceled");
+                                error = false;  
+                            }
+                            else
+                            {
+                                Console.WriteLine("Please input Y/N");
+                            }
+                        }
+                    }
+
                     else
                     {
                         Console.WriteLine("Invalid option");
                     }
+                
+                    
+
                 }
+
                 else
                 {
                     Console.WriteLine("Book not found...");
@@ -195,9 +262,9 @@ namespace LibraryManagement
             }
 
 
-            else
+            else//if you get error then it sends u back
             {
-                Console.WriteLine("Please input 1 or 2 only.");
+                Console.WriteLine("Please input 1/2/3 only.");
                 Console.Clear();
                 Main(args);
             }
@@ -211,12 +278,11 @@ namespace LibraryManagement
 
 
 
-        public static string[] read(string path)
+        public static string[] read(string path)//reads the file and splits up the lines into words
         {
-            // Specifying a file
 
 
-            // Calling the ReadAllLines() function
+
             string[] readText = File.ReadAllLines(path);
             string str = string.Join("", readText);
             string[] items = str.Split(',');
@@ -227,11 +293,11 @@ namespace LibraryManagement
 
 
         }
-        public static List<int> search(int lineCount, List<string> authors, List<string> book, List<string> location, List<string> genre, List<int> lines)
+        public static List<int> search(int lineCount, List<string> authors, List<string> book, List<string> location, List<string> genre, List<int> lines)//searches list (smart stuff here)
         {
             int x = 0;
             int input = 0;
-            bool found = false;
+            bool found = false;//defining all the not imported values needed
             
 
 
@@ -240,7 +306,7 @@ namespace LibraryManagement
 
 
             Console.WriteLine("1 to search based on author /// 2 for book name /// 3 for location /// 4 for genre /// 5 to display all books");
-            try
+            try//catches input errors
             {
                 input = int.Parse(Console.ReadLine());
             }
@@ -251,7 +317,7 @@ namespace LibraryManagement
 
             }
             
-            if (input == 1)
+            if (input == 1)//search based on authors
             {
                 Console.WriteLine("Enter search prompt:");
                 string prompt = (Console.ReadLine());
@@ -259,11 +325,11 @@ namespace LibraryManagement
                 {
                     while (x < lineCount)
                     {
-                        if (prompt == authors[x])
+                        if (prompt == authors[x])//keeps going even if you find one correct line
                         {
-                            found = true;
+                            found = true;//if it finds even one instance it will allow you to break the first while loop
                             x++;
-                            lines.Add(x);
+                            lines.Add(x);//adds the number to the line list
 
 
 
@@ -273,15 +339,15 @@ namespace LibraryManagement
                             x++;
                         }
                     }
-                    break;
+                    break;//allows it to break the while loop
                 }
-                if (found == false)
+                if (found == false)//if after all lines have been check and doesnt find it
                 {
                     Console.WriteLine("Author not found");
                 }
                 else
                 {
-                    Console.WriteLine("Author // Book // Location // Genre");
+                    Console.WriteLine("Author // Book // Location // Genre");//displays book information
                     int lengthMultiple = lines.Count();
                     int z = 0;
                     while (z < lengthMultiple)
@@ -292,7 +358,7 @@ namespace LibraryManagement
                     }
                 }
             }
-            else if (input == 2)
+            else if (input == 2)//if searching by book name
             {
                 while (found == false)
                 {
@@ -303,8 +369,9 @@ namespace LibraryManagement
                         if (prompt == book[x])
                         {
                             found = true;
-                            lines.Add(x);
                             x++;
+                            lines.Add(x);
+                            
                         }
                         else
                         {
@@ -326,12 +393,12 @@ namespace LibraryManagement
                     while (z < lengthMultiple)
                     {
                         int p = z + 1;
-                        Console.WriteLine(p + ".  " + authors[lines[z]] + " // " + book[lines[z]] + " // " + location[lines[z]] + " // " + genre[lines[z]]);
+                        Console.WriteLine(p + ".  " + authors[lines[z]-1] + " // " + book[lines[z]-1] + " // " + location[lines[z]-1] + " // " + genre[lines[z] - 1]);
                         z++;
                     }
                 }
             }
-            else if (input == 3)
+            else if (input == 3)//search by location
             {
                 Console.WriteLine("Enter search prompt:");
                 string prompt = (Console.ReadLine());
@@ -342,8 +409,9 @@ namespace LibraryManagement
                         if (prompt == location[x])
                         {
                             found = true;
-                            lines.Add(x);
                             x++;
+                            lines.Add(x);
+                            
                         }
                         else
                         {
@@ -365,12 +433,12 @@ namespace LibraryManagement
                     while (z < lengthMultiple)
                     {
                         int p = z + 1;
-                        Console.WriteLine(p + ".  " + authors[lines[z]] + " // " + book[lines[z]] + " // " + location[lines[z]] + " // " + genre[lines[z]]);
+                        Console.WriteLine(p + ".  " + authors[lines[z] - 1] + " // " + book[lines[z] - 1] + " // " + location[lines[z] - 1] + " // " + genre[lines[z] - 1]);
                         z++;
                     }
                 }
             }
-            else if (input == 4)
+            else if (input == 4)//search by genre
             {
                 Console.WriteLine("Enter search prompt:");
                 string prompt = (Console.ReadLine());
@@ -381,8 +449,9 @@ namespace LibraryManagement
                         if (prompt == genre[x])
                         {
                             found = true;
-                            lines.Add(x);
                             x++;
+                            lines.Add(x);
+                            
                         }
                         else
                         {
@@ -404,12 +473,12 @@ namespace LibraryManagement
                     while (z < lengthMultiple)
                     {
                         int p = z + 1;
-                        Console.WriteLine(p + ".  " + authors[lines[z]] + " // " + book[lines[z]] + " // " + location[lines[z]] + " // " + genre[lines[z]]);
+                        Console.WriteLine(p + ".  " + authors[lines[z] - 1] + " // " + book[lines[z] - 1] + " // " + location[lines[z] - 1] + " // " + genre[lines[z] - 1]);
                         z++;
                     }
                 }
             }
-            else if (input == 5)
+            else if (input == 5)//display all
             {
                 Console.WriteLine("");
                 while (x < lineCount)
@@ -417,8 +486,9 @@ namespace LibraryManagement
                     
                     Console.WriteLine((x+1) + ".  " + authors[x] + " // " + book[x] + " // " + location[x] + " // " + genre[x]);
                     x++;
-                }
 
+                }
+                lines.Add((-1));//allows the program to detect if all things are being displayed without saving them all to lines
 
             }
 
